@@ -5,7 +5,9 @@
   "repository": "git@github.com:SouparnoGhosh/uniswap-v2-core-clone.git",
   "license": "MIT",
   "devDependencies": {
+    "@aave/protocol-v2": "^1.0.1",
     "@chainlink/contracts": "^0.4.1",
+    "@ethersproject/bignumber": "^5.6.2",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
@@ -42,6 +44,6 @@
     "hardhat-deploy": "^0.11.5"
   },
   "scripts": {
-    "build": "hardhat clean && hardhat compile"
+    "build": "yarn hardhat clean && yarn hardhat compile"
   }
 }
