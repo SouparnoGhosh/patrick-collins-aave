@@ -1,11 +1,7 @@
-## Practising Solidity-By-Example Applications
+## Working with AAVE
 
 ---
 
-This is an ether wallet contract made using the [guide](https://solidity-by-example.org/app/ether-wallet) in Solidity by Example.
-
-Done using hardhat, tested with waffle, deployed using hardhat-deploy.
-
----
-
-Verified on [Etherscan](https://rinkeby.etherscan.io/address/0x2922d830a30570fdb15d256569d32Ea62C9BA60c#code)
+1. Deposit Collateral: ETH / WETH
+2. Borrow another asset: DAI
+3. Repay the DAI

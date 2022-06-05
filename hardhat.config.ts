@@ -14,7 +14,22 @@ dotenv.config({ path: path.join(__dirname, "/.env.local") });
 dotenv.config();
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.6",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.7",
+      },
+      {
+        version: "0.6.6",
+      },
+      {
+        version: "0.6.12",
+      },
+      {
+        version: "0.4.19",
+      },
+    ],
+  },
   namedAccounts: { deployer: { default: 0 } },
   networks: {
     rinkeby: {
