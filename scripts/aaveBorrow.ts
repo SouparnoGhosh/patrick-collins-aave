@@ -1,6 +1,6 @@
 /* eslint-disable node/no-missing-import */
 /* eslint-disable no-process-exit */
-import { ethers, getNamedAccounts, network } from "hardhat";
+import { ethers, getNamedAccounts /* network */ } from "hardhat";
 import { getWeth, AMOUNT } from "../scripts/getWeth";
 // import { networkConfig } from"../helper-hardhat-config"
 import {
@@ -28,9 +28,31 @@ async function main() {
   console.log(`Deposited!`);
   const borrowData = await getBorrowUserData(lendingPool, deployer);
   const availableBorrowsETH = borrowData[0];
-  const totalDebtETH = borrowData[1];
+  // const totalDebtETH = borrowData[1];
   // Get the DAI/ETH price
   const daiPrice = await getDaiPrice();
+  const amountDaiToBorrow = availableBorrowsETH.div(daiPrice);
+  const amountDaiToBorrowWei = ethers.utils.parseEther(
+    amountDaiToBorrow.toString()
+  );
+  console.log(`You can borrow ${amountDaiToBorrow.toString()} DAI`);
+  // borrow the DAI
+  const daiAddress = "0x6b175474e89094c44da98b954eedeac495271d0f";
+  await borrowDai(
+    daiAddress,
+    lendingPool,
+    amountDaiToBorrowWei.toString(),
+    deployer
+  );
+  await getBorrowUserData(lendingPool, deployer);
+  // Repay the pool
+  await repay(
+    amountDaiToBorrowWei.toString(),
+    daiAddress,
+    lendingPool,
+    deployer
+  );
+  await getBorrowUserData(lendingPool, deployer);
 }
 
 async function getLendingPool(account: Address): Promise<ILendingPool> {
@@ -96,6 +118,35 @@ async function getDaiPrice(): Promise<BigNumber> {
   const price = (await daiPriceFeed.latestRoundData())[1];
   console.log(`The DAI/ETH price is ${price.toString()}`);
   return price;
+}
+
+async function borrowDai(
+  daiAddress: string,
+  lendingPool: ILendingPool,
+  amountToBorrow: string,
+  account: Address
+) {
+  const borrowTxn = await lendingPool.borrow(
+    daiAddress,
+    amountToBorrow,
+    1,
+    0,
+    account
+  );
+  await borrowTxn.wait(1);
+  console.log(`You have borrowed!`);
+}
+
+async function repay(
+  amount: string,
+  daiAddress: string,
+  lendingPool: ILendingPool,
+  account: Address
+) {
+  await approveErc20(daiAddress, lendingPool.address, amount, account);
+  const repayTx = await lendingPool.repay(daiAddress, amount, 1, account);
+  await repayTx.wait(1);
+  console.log("Repaid!");
 }
 
 main()
