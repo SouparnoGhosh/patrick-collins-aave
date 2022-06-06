@@ -20,7 +20,7 @@ async function main() {
   console.log(`Lending Pool address: ${lendingPool.address}`);
 
   // Now deposit
-  19:53
+  const wethTokenAddress = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 }
 
 async function getLendingPool(account: Address): Promise<ILendingPool> {
@@ -38,6 +38,22 @@ async function getLendingPool(account: Address): Promise<ILendingPool> {
     account
   );
   return lendingPool;
+}
+
+async function approveErc20(
+  erc20ContractAddress: string,
+  spenderAddress: string,
+  amountToSpend: string,
+  account: Address
+) {
+  const erc20Token = await ethers.getContractAt(
+    "IERC20",
+    erc20ContractAddress,
+    account
+  );
+  const txResponse = erc20Token.approve(spenderAddress, amountToSpend);
+  await txResponse.wait(1);
+  console.log(`Approved`);
 }
 
 main()
